@@ -66,7 +66,7 @@ double derivative(double x,double epsilon,double (*f)(double x))
 }
 
 //牛顿下山法
-void Newton_down(double x0,double epsilon,double (*f)(double x))
+void newton_down(double x0,double epsilon,double (*f)(double x))
 {
     double k,x,x1,x2,lamda;
     x = x0;
@@ -96,7 +96,7 @@ void Newton_down(double x0,double epsilon,double (*f)(double x))
 }
 
 //牛顿迭代法（第二版）
-void Newton(double x0,double epsilon,double (*f)(double x))
+void newton(double x0,double epsilon,double (*f)(double x))
 {
     double k,x,x1,x2;
     x = x0;
@@ -182,7 +182,7 @@ void single_secant(double x0,double epsilon,double (*f)(double x))
 }
 
 //两点弦截法
-void Double_secant(double x0,double epsilon,double (*f)(double x))
+void double_secant(double x0,double epsilon,double (*f)(double x))
 {
     double k,x1,x2;
     k = derivative(x0,epsilon,f);
@@ -209,3 +209,45 @@ void Double_secant(double x0,double epsilon,double (*f)(double x))
 }
 
 //上三角矩阵的求解方法（线性方程组）
+//矩阵U(n*n)为系数矩阵，B(1*n)为方程右侧常数矩阵
+void up_triangle(double U[n][n],double B[n],int n)//n为矩阵阶数，自行输入
+{
+    double *x[n];
+    double ux = 0;
+    x[n] = B[n]/U[n][n];
+    for(int i=n-1;i>=0;i--)
+    {
+        for(int j=i+1;j<=n;j++)
+        {
+            ux+ = U[i][j]*x[j];
+        }
+        x[i] = (B[i]-ux)/U[i][i];
+    }
+    for(int k=0;k<=n-1;k++)
+    {
+        printf("x[%d]=%lf\n",k+1,x[k]);
+    }
+    getchar();
+}
+
+//下三角矩阵的求解方法（线性方程组）
+//矩阵U(n*n)为系数矩阵，B(1*n)为方程右侧常数矩阵
+void down_triangle(double U[n][n],double B[n],int n)//n为矩阵阶数，自行输入
+{
+    double *x[n];
+    double ux = 0;
+    x[0] = B[0]/U[0][0];
+    for(int i=2;i<=n;i++)
+    {
+        for(int j=1;j<=i-1;j++)
+        {
+            ux+ = U[i][j]*x[j];
+        }
+        x[i] = (B[i]-ux)/U[i][i];
+    }
+    for(int k=0;k<=n-1;k++)
+    {
+        printf("x[%d]=%lf\n",k+1,x[k]);
+    }
+    getchar();
+}
