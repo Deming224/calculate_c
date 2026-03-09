@@ -1,14 +1,14 @@
 #include "num_com.h"
 
-void picard_aitken(double x0,double epsilon)
+//埃德金加速的Picard迭代法
+void picard_aitken(double x0,double epsilon,double (*phi_x)(double x))
 {
     double x,x1,x2;
-    x0 = 0;//the initial value
     x = x0;
     for(int k=1;;k++)
     {
         x1 = x;
-        x2 = ((x1*(Phi_X(Phi_X(x1))))-((Phi_X(x1))*(Phi_X(x1))))/((Phi_X(Phi_X(x1)))-(2*(Phi_X(x1)))+x1);//the formula of Aitken's method
+        x2 = ((x1*((*phi_x)(phi_x(x1))))-(((*phi_x)(x1))*((*phi_x)(x1))))/(((*phi_x)((*phi_x)(x1)))-(2*((*phi_x)(x1)))+x1);//the formula of Aitken's method
         if(fabs(x2-x1)<=epsilon)
         {
             printf("%lf\n",x2);
@@ -25,15 +25,15 @@ void picard_aitken(double x0,double epsilon)
     system("pause");
 }
 
-void picard(double x0,double epsilon)
+//Picard迭代法（第二版）
+void picard(double x0,double epsilon,double (*phi_x)(double x))
 {
-     double x,x1,x2;
-    x0 = 0;//the initial value
+    double x,x1,x2;
     x = x0;
     for(int k=1;;k++)
     {
         x1 = x;
-        x2 = Phi_X(x);//the formula of Picard's method
+        x2 = (*phi_x)(x);//the formula of Picard's method
         if(fabs(x2-x1)<=epsilon)
         {
             printf("%lf\n",x2);
@@ -50,29 +50,31 @@ void picard(double x0,double epsilon)
     system("pause");
 }
 
-double derivative(double x,double epsilon)
+//求导方法能否更加精简？
+double derivative(double x,double epsilon,double (*f)(double x))
 {
     double dx = 0.0001;
     double dy_0,dy_1;
     do
     {
-        dy_0 = ((F(x+dx)) - (F(x)))/dx;
+        dy_0 = (((*f)(x+dx)) - ((*f)(x)))/dx;
         dx = 0.5*dx;
-        dy_1 = ((F(x+dx))-(F(x)))/dx;
+        dy_1 = (((*f)(x+dx))-((*f)(x)))/dx;
     }
     while(fabs(dy_0-dy_1)>epsilon);
     return dy_1;
 }
 
-void Newton(double x0,double epsilon)
+//牛顿迭代法（第一版）
+void Newton(double x0,double epsilon,double (*f)(double x))
 {
     double k,x,x1,x2;
     x = x0;
     for(int i=1;;i++)
     {
         x1 = x;
-        k = derivative(x1,epsilon);//epsilon needs to be changed as your wish
-        x2 = x1-((F(x1))/k);//the formula of Newton's method
+        k = derivative(x1,epsilon,f);//epsilon needs to be changed as your wish
+        x2 = x1-(((*f)(x1))/k);//the formula of Newton's method
         if(fabs(x2-x1)<=epsilon)
         {
             printf("%lf\n",x2);
@@ -89,12 +91,13 @@ void Newton(double x0,double epsilon)
     system("pause");
 }
 
-double dichotomy(double x1,double x2,double epsilon)
+//二分法还有更加简洁的写法吗？
+double dichotomy(double x1,double x2,double epsilon,double (*f)(double x))
 {
     double x0;
     for(int k;;k++)
     {
-        if((F(x1))*(F(x2))<0)
+        if(((*f)(x1))*((*f)(x2))<0)
         {
             x0 = (x1+x2)/2;
             if((x2-x1)<=epsilon)
@@ -103,11 +106,11 @@ double dichotomy(double x1,double x2,double epsilon)
             }
             else
             {
-                if((F(x1)*(F(x0)))<0)
+                if(((*f)(x1)*((*f)(x0)))<0)
                 {
                     x2 = x0;
                 }
-                else if((F(x0))*(F(x2))<0)
+                else if(((*f)(x0))*((*f)(x2))<0)
                 {
                     x1 = x0;
                 }
