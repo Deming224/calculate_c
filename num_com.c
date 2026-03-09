@@ -65,6 +65,36 @@ double derivative(double x,double epsilon,double (*f)(double x))
     return dy_1;
 }
 
+//牛顿下山法
+void Newton_down(double x0,double epsilon,double (*f)(double x))
+{
+    double k,x,x1,x2,lamda;
+    x = x0;
+    for(int i=1;;i++)
+    {
+        x1 = x;
+        k = derivative(x1,epsilon,f);//epsilon needs to be changed as your wish
+        lamda = 1;
+        x2 = x1-(((*f)(x1))/k)*lamda;//the formula of Newton_down's method
+        if(fabs(x2-x1)<=epsilon)
+        {
+            printf("%lf\n",x2);
+            printf("k=%d\n",i);
+            break;
+        }
+        else
+        {
+            if(((*f)(x2))*((*f)(x1))>0)
+                lamda = 0.5*lamda;//0.5 is the coefficient of lamda
+                x2 = x1-(((*f)(x1))/k)*lamda;
+            }
+            x = x2;
+            printf("%lf\n",x);
+        }
+    printf("calculation is done");
+    getchar();
+}
+
 //牛顿迭代法（第一版）
 void Newton(double x0,double epsilon,double (*f)(double x))
 {
