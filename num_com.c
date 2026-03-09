@@ -192,7 +192,7 @@ void double_secant(double x0,double x00,double epsilon,double (*f)(double x))
     for(int i=1;;i++)
     {
         k = (((*f)(x2))-((*f)(x1)))/(x2-x1);
-        x3 = x1-(((*f)(x1))/k);//两点弦截法迭代公式
+        x3 = x2-(((*f)(x2))/k);//两点弦截法迭代公式
         if(fabs(x3-x2)<=epsilon)
         {
             printf("%lf\n",x3);
