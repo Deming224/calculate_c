@@ -218,23 +218,23 @@ void double_secant(double x0,double x00,double epsilon,double (*f)(double x))
 void up_triangle(double **U, double *B, int n)
 {
     double *x = (double*)malloc(n * sizeof(double));
-    if (!x) {
+    if (!x) 
+    {
         fprintf(stderr, "out of memory\n");
         return;
     }
-
-    for (int i = n - 1; i >= 0; --i) {
+    for (int i = n - 1; i >= 0; --i) 
+    {
         double sum = 0.0;
         for (int j = i + 1; j < n; ++j) {
             sum += U[i][j] * x[j];
         }
         x[i] = (B[i] - sum) / U[i][i];
     }
-
-    for (int k = 0; k < n; ++k) {
+    for (int k = 0; k < n; ++k) 
+    {
         printf("x[%d] = %lf\n", k + 1, x[k]);
     }
-
     free(x);
     getchar();
 }
@@ -244,26 +244,108 @@ void up_triangle(double **U, double *B, int n)
 void down_triangle(double **L, double *B, int n)
 {
     double *x = (double*)malloc(n * sizeof(double));
-    if (!x) {
+    if (!x) 
+    {
         fprintf(stderr, "out of memory\n");
         return;
     }
-
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i) 
+    {
         double sum = 0.0;
         for (int j = 0; j < i; ++j) {
             sum += L[i][j] * x[j];
         }
         x[i] = (B[i] - sum) / L[i][i];
     }
-
     for (int k = 0; k < n; ++k) {
         printf("x[%d] = %lf\n", k + 1, x[k]);
     }
-
     free(x);
     getchar();
 }
 
-//高斯消元法
-;
+//高斯消元法（未换主元版）
+void gauss_elimination(double **A,double *B,int n)
+{
+    double k = 0.0;
+    for(int i=1;i<n;i++)
+    {
+        k = A[i][i-1] / A[i-1][i-1];
+        for(int j=0;j<n;j++)
+        {
+            A[i][j] -= k * A[i-1][j];
+        }
+        B[i] -= k * B[i-1];
+    }  
+}
+
+//高斯消元法（列主元版）
+void gauss_elimination_pivot(double **A, double *B, int n)
+{
+    double k = 0.0;
+    for(int i=1;i<n;i++)
+    {
+        if(A[i][i-1] > A[i-1][i-1])
+        {
+            double swap;
+            swap = A[i][i-1];
+            A[i][i-1] = A[i-1][i-1];
+            A[i-1][i-1] = swap;
+        }
+        k = A[i][i-1] / A[i-1][i-1];
+        for(int j=0;j<n;j++)
+        {
+            A[i][j] -= k * A[i-1][j];
+        }
+        B[i] -= k * B[i-1];
+    }
+}
+
+//追赶法（求解对角阵）
+void chasing_method(double *a, double *b, double *c, double *d, int n)
+{
+    double *x = (double*)malloc(n * sizeof(double));
+    if (!x) 
+    {
+        fprintf(stderr, "out of memory\n");
+        return;
+    }
+    double *l = (double*)malloc((n-1) * sizeof(double));
+    double *y = (double*)malloc((n-1) * sizeof(double));
+    if (!l || !y) 
+    {
+        fprintf(stderr, "out of memory\n");
+        free(l);
+        free(y);
+        return;
+    }
+    double *beta = (double*)malloc(n * sizeof(double));
+    if (!beta) 
+    {
+        fprintf(stderr, "out of memory\n");
+        free(beta);
+        return;
+    }
+    beta[0] = b[0];
+    y[0] = d[0];
+    for(int i=1;i<n;i++)
+    {
+        l[i-1] = a[i]/beta[i-1];
+        beta[i] = b[i]-(l[i-1]*c[i-1]);
+        y[i] = d[i]-(l[i-1]*y[i-1]);
+    }
+    x[n-1] = y[n-1]/beta[n-1];
+    for(int j=n-2;j>=0;j--)
+    {
+        x[j] = (y[j]-c[j]*x[j+1])/beta[j];
+    }
+    for (int k = 0; k < n; ++k)
+    {
+        printf("x[%d] = %lf\n",k+1,x[k]);
+    }
+    free(x);
+    free(l);
+    free(y);
+    free(beta);
+    getchar();
+}
