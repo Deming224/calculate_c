@@ -14,6 +14,6 @@ double dichotomy(double x1,double x2,double epsilon,double (*f)(double x));
 void up_triangle(double **U, double *B, int n);
 void down_triangle(double **L, double *B, int n);
 
-void gauss_elimination(double **A,int n);
+void gauss_elimination(double **A,double *B,int n);
 void gauss_elimination_pivot(double **A, double *B, int n);
 void chasing_method(double *a, double *b, double *c, double *d, int n);
