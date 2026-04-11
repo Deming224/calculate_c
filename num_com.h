@@ -22,3 +22,6 @@ void ldl(double **A, int n);
 void ll(double **A,int n);
 
 void chasing_method(double *a, double *b, double *c, double *d, int n);
+double judge_error_matrix(double *x1, double *x, int n);
+void jacobi(double **A, double *B, double *x0, double epsilon, int n);
+void gauss_seidel(double **A, double *B, double *x0, double epsilon, int n);

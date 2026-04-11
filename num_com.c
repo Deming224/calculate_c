@@ -584,3 +584,156 @@ void chasing_method(double *a, double *b, double *c, double *d, int n)
     free(beta);
     getchar();
 }
+
+//判断迭代矩阵元素误差
+double judge_error_matrix(double *x1, double *x, int n)
+{
+    double max_error = 0;
+    for (int i = 0; i < n; i++)
+    {
+        double error = fabs(x1[i] - x[i]);
+        if (error > max_error)
+        {
+            max_error = error;
+        }
+    }
+    return max_error;
+}
+
+//Jacobi迭代法
+void jacobi(double **A, double *B, double *x0, double epsilon, int n)
+{
+    double sum_1 = 0;
+    double sum_2 = 0;
+    double *x = (double*)malloc(n * sizeof(double));
+    if (!x)
+    {
+        fprintf(stderr, "out of memory\n");
+        free(x);
+        return;
+    }
+    double *x1 = (double*)malloc(n * sizeof(double));
+    if (!x1)
+    {
+        fprintf(stderr, "out of memory\n");
+        free(x);
+        return;
+    }
+    double *J = (double*)malloc(n * sizeof(double));
+    if (!J)
+    {
+        fprintf(stderr, "out of memory\n");
+        free(x);
+        return;
+    }
+    //赋初始值
+    for(int i = 0;i<n;i++)
+    {
+        x[i] = x0[i];
+    }
+    for(int k=1;;k++)
+    {
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<(i-1);j++)
+            {
+                sum_1 += A[i][j]*x[j];
+            }
+            for(int j=(i+1);j<n;j++)
+            {
+                sum_2 += A[i][j]*x[j];
+            }
+            x1[i] = (B[i]-sum_1-sum_2)/A[i][i];//Jacobi迭代法迭代公式
+        }
+        if (judge_error_matrix(x1, x, n) < epsilon)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                printf("x[%d] = %lf\n", i + 1, x1[i]);
+            }
+            free(x);
+            free(x1);
+            free(J);
+            return;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            x[i] = x1[i];
+        }
+    }
+    getchar();
+    return;
+}
+
+//Gauss-Seidel迭代法
+void gauss_seidel(double **A, double *B, double *x0, double epsilon, int n)
+{
+    double *x = (double*)malloc(n * sizeof(double));
+    if (!x)
+    {
+        fprintf(stderr, "out of memory\n");
+        free(x);
+        return;
+    }
+    double *x1 = (double*)malloc(n * sizeof(double));
+    if (!x1)
+    {
+        fprintf(stderr, "out of memory\n");
+        free(x);
+        return;
+    }
+    for(int i = 0; i < n; i++)
+    {
+        x[i] = x0[i];
+        x1[i] = x0[i];
+    }
+    for(int k=1;;k++)
+    {
+        for(int i=0;i<n;i++)
+        {
+            double sum_1 = 0;
+            double sum_2 = 0;
+            for(int j=0;j<(i-1);j++)
+            {
+                sum_1 += A[i][j]*x1[j];
+            }
+            for(int j=(i+1);j<n;j++)
+            {
+                sum_2 += A[i][j]*x[j];
+            }
+            x1[i] = (B[i]-sum_1-sum_2)/A[i][i];//Gauss-Seidel迭代法迭代公式
+        }
+        if (judge_error_matrix(x1, x, n) < epsilon)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                printf("x[%d] = %lf\n", i + 1, x1[i]);
+            }
+            free(x);
+            free(x1);
+            return;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            x[i] = x1[i];
+        }
+    }
+    getchar();
+    return;
+}
+
+//SOR迭代法
+
+//lagrange插值法
+
+//Newton插值法
+
+//Hermite插值法
+
+//等距节点插值法
+
+//样条插值法
+
+//最小二乘拟合法
+
+//
